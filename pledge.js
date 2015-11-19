@@ -1,25 +1,33 @@
-/*----------------------------------------------------------------
-Promises Workshop: build the pledge.js deferral-style promise library
-----------------------------------------------------------------*/
-// YOUR CODE HERE:
+var STATE_PENDING = 'pending',
+	STATE_RESOLVED = 'resolved', 
+	STATE_REJECTED = 'rejected'; 
 
 
 
+function $Promise() {
+	this.state = STATE_PENDING; 
+	this.value = null; 
+}
 
+function Deferral() {
+	this.$promise = new $Promise(); 
 
+} 
 
-/*-------------------------------------------------------
-The spec was designed to work with Test'Em, so we don't
-actually use module.exports. But here it is for reference:
+Deferral.prototype.resolve = function(data) {
+	if(this.$promise.state === STATE_PENDING) {
+		this.$promise.state = STATE_RESOLVED; 
+		this.$promise.value = data; 
+	}
+}
 
-module.exports = {
-  defer: defer,
-};
+Deferral.prototype.reject = function(reason) {
+	if(this.$promise.state === STATE_PENDING) {
+		this.$promise.state = STATE_REJECTED; 
+		this.$promise.value = reason; 
+	}
+}
 
-So in a Node-based project we could write things like this:
-
-var pledge = require('pledge');
-…
-var myDeferral = pledge.defer();
-var myPromise1 = myDeferral.$promise;
---------------------------------------------------------*/
+function defer() {
+	return new Deferral(); 
+} 
